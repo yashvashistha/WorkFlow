@@ -20,9 +20,7 @@ export default function FileUpload() {
       files.forEach((file) => {
         formData.append("file", file);
       });
-
-      const response = await UploadFile(formData);
-      console.log(response);
+      await UploadFile(formData);
     } else {
       alert("No file selected.");
     }
@@ -37,9 +35,9 @@ export default function FileUpload() {
         fontFamily: "sans-serif",
       }}
     >
-      <h3 style={{ fontWeight: "600" }}>Upload your Excel/CSV file</h3>
+      <h3 style={{ fontWeight: "600" }}>Upload your Excel file</h3>
       <p style={{ marginBottom: "1rem", color: "#666" }}>
-        Choose an Excel or CSV file
+        Choose an Excel file
       </p>
 
       <label
@@ -56,7 +54,7 @@ export default function FileUpload() {
       >
         <div>Drag and drop file here</div>
         <div style={{ fontSize: "0.85rem", color: "#999" }}>
-          Limit 200MB per file • XLSX, CSV
+          Limit 200MB per file • XLSX
         </div>
         <button
           type="button"
@@ -74,7 +72,7 @@ export default function FileUpload() {
         <input
           id="file-upload"
           type="file"
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           onChange={handleFileChange}
           style={{ display: "none" }}
         />

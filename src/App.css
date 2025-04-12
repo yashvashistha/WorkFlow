@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 .App {
   background-color: transparent;
   height: 100vh;
@@ -21,12 +25,14 @@
 .dashboard #d-3 {
   flex: 2;
   background-color: white;
+  overflow: auto;
 }
 
 .dashboard #d-2 {
   flex: 3;
   background-color: white;
   overflow: auto;
+  padding: 10px;
 }
 
 .dashboard #d-3:last-of-type {
@@ -47,4 +53,83 @@
 
 .react-flow__panel {
   display: none;
+}
+
+button {
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.chat-window {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.chat-box {
+  width: 100%;
+  max-width: 800px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.chat-body {
+  padding: 1.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.chat-scroll-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.chat-message {
+  width: 100%;
+}
+
+.chat-user {
+  align-self: flex-end;
+  background-color: #e1f5fe;
+  color: #000;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  max-width: 70%;
+  margin-left: auto;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+
+.chat-ai {
+  align-self: flex-start;
+  background-color: #f3f4f6;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  max-width: 70%;
+  margin-right: auto;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+
+.chat-ai-header {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.chat-ai-content {
+  color: #333;
+}
+
+.chat-placeholder {
+  text-align: center;
+  color: #aaa;
+  font-size: 1.2rem;
+  padding: 2rem 0;
 }

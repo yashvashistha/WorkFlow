@@ -1,25 +1,33 @@
 import React, { useContext, useState } from "react";
 import ChatWindow from "../components/ChatWindow";
 import { APIContext } from "../helpers/APIContext";
-import { useNavigate } from "react-router-dom";
 import WorkflowDiagram from "../components/WorkflowDiagram";
 import FileUpload from "../components/FileUpload";
 import ProcessTable from "../components/ProcessTable";
 
 export default function Dashboard() {
-  const { messages, workdata, workflowData } = useContext(APIContext);
-  const navigate = useNavigate();
+  const { messages, workdata, workflowData, setMessages, UpdateWorkFlow } =
+    useContext(APIContext);
+  const [showTable, setShowTable] = useState(true);
   const [typing, setTyping] = useState({
     type: false,
     txt: "",
   });
   const [prevkey, setPrevKey] = useState("");
 
-  const sendinput = (text) => {
+  const sendinput = async (text) => {
     setTyping({
       type: false,
       txt: "",
     });
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: "user",
+        query: text,
+      },
+    ]);
+    await UpdateWorkFlow(text);
   };
 
   const handleInputChange = (e) => {
@@ -46,12 +54,25 @@ export default function Dashboard() {
       <section className="workflow" id="d-2">
         <h2>WorkFlow Diagram Generator</h2>
 
-        {workdata && <h4>Uploaded Data:</h4>}
-        {workdata && <ProcessTable data={workdata} />}
+        {workdata && (
+          <h4>
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setShowTable(!showTable);
+              }}
+            >
+              {showTable ? "▲" : "▼"}
+            </span>{" "}
+            Uploaded Data:
+          </h4>
+        )}
+        {workdata && showTable && <ProcessTable data={workdata} />}
 
         {workflowData && <h4>Generated Workflow Diagram:</h4>}
         {workflowData && <WorkflowDiagram workflowData={workflowData} />}
       </section>
+
       <section id="d-3">
         <ChatWindow Messages={messages} />
 

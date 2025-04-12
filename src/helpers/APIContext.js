@@ -16,6 +16,9 @@ export const APIContext = createContext({
   },
   workflowData: null,
   workdata: null,
+  UpdateWorkFlow: async () => {
+    return { status: 0, msg: "", data: [] };
+  },
 });
 
 const APIContextProvider = ({ children }) => {
@@ -40,7 +43,6 @@ const APIContextProvider = ({ children }) => {
         },
         maxBodyLength: Infinity,
       });
-      console.log(response);
       if (response.status == 200 && response.data) {
         setWorkData(response.data);
         const work = await ConvertFlow(response.data);
@@ -72,9 +74,7 @@ const APIContextProvider = ({ children }) => {
         maxBodyLength: Infinity,
       });
       if (response.status == 200 && response.data) {
-        const temp = await convertFlowchartData(response.data);
-        console.log(temp, response.data);
-        setWorkflowData(temp);
+        setWorkflowData(response.data);
         return { status: 1, msg: "", data: response.data };
       } else {
         return { status: 0, msg: "Error in Uploading the file", data: [] };
@@ -86,113 +86,69 @@ const APIContextProvider = ({ children }) => {
     }
   };
 
-  const convertFlowchartData = async (data) => {
-    const formattedNodes = data.nodes.map((node) => {
-      const formattedNode = {
-        id: node.id,
-        label: node.label,
-        type: node.type,
-      };
-      if (node.role) {
-        formattedNode.role = node.role;
-      }
-      if (node.it_system) {
-        formattedNode.it_system = node.it_system;
-      }
-      return formattedNode;
-    });
-
-    const formattedEdges = data.edges.map((edge) => {
-      const formattedEdge = {
-        from: edge.from,
-        to: edge.to,
-        type: edge.type,
-      };
-      if (edge.label) {
-        formattedEdge.label = edge.label;
-      }
-      return formattedEdge;
-    });
-
-    return {
-      nodes: formattedNodes,
-      edges: formattedEdges,
+  const UpdateWorkFlow = async (query) => {
+    const body = {
+      process_flow: workflowData,
+      modifications: query,
     };
+    let olddata = workflowData;
+    try {
+      setWorkflowData(null);
+      const response = await axios.post(`${url}/modify-process-flow/`, body, {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        maxBodyLength: Infinity,
+      });
+
+      if (response.status == 200 && response.data) {
+        setWorkflowData(response.data);
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "ai",
+            query: describeChanges(olddata, response.data),
+          },
+        ]);
+        return { status: 1, msg: "", data: response.data };
+      } else {
+        return { status: 0, msg: "Error in Uploading the file", data: [] };
+      }
+    } catch {
+      console.error("");
+    } finally {
+    }
   };
 
-  // const workflowData1 = {
-  //   nodes: [
-  //     { id: 0, label: "Start", type: "start", role: "", it_system: "" },
-  //     {
-  //       id: 1,
-  //       label: "Create Targets",
-  //       type: "process",
-  //       role: "Manager - PMT",
-  //       it_system: "MS Excel",
-  //     },
-  //     {
-  //       id: 2,
-  //       label: "Approve Targets",
-  //       type: "decision",
-  //       role: "GM Sales",
-  //       it_system: "MS Word",
-  //     },
-  //     {
-  //       id: 3,
-  //       label: "Distribute Targets",
-  //       type: "process",
-  //       role: "Manager - PMT",
-  //       it_system: "MS Outlook",
-  //     },
-  //     {
-  //       id: 4,
-  //       label: "Monitor Targets",
-  //       type: "process",
-  //       role: "Manager - PMT",
-  //       it_system: "MS Excel",
-  //     },
-  //     {
-  //       id: 5,
-  //       label: "Share Updates",
-  //       type: "process",
-  //       role: "Manager - PMT",
-  //       it_system: "MS Outlook",
-  //     },
-  //     {
-  //       id: 6,
-  //       label: "Meeting with Low Performers",
-  //       type: "process",
-  //       role: "SM Sales",
-  //       it_system: "In Person",
-  //     },
-  //     {
-  //       id: 7,
-  //       label: "Discuss Improvement Plan",
-  //       type: "decision",
-  //       role: "SM Sales",
-  //       it_system: "In Person",
-  //     },
-  //     {
-  //       id: 8,
-  //       label: "Track Performance",
-  //       type: "process",
-  //       role: "",
-  //       it_system: "MS Excel",
-  //     },
-  //     { id: 9, label: "End", type: "end", role: "", it_system: "" },
-  //   ],
-  //   edges: [
-  //     { from: 0, to: 1 },
-  //     { from: 1, to: 2 },
-  //     { from: 2, to: 3, label: "Targets Justified" },
-  //     { from: 3, to: 4 },
-  //     { from: 4, to: 5 },
-  //     { from: 5, to: 6 },
-  //     { from: 6, to: 7 },
-  //     { from: 7, to: 8, label: "Performance Low" },
-  //     { from: 8, to: 9 },
-  //   ],
-  // };
+  const describeChanges = (oldJson, newJson) => {
+    const changes = [];
+
+    const oldNodes = Object.fromEntries(
+      (oldJson.nodes || []).map((node) => [node.id, node])
+    );
+    const newNodes = Object.fromEntries(
+      (newJson.nodes || []).map((node) => [node.id, node])
+    );
+
+    for (const [id, newNode] of Object.entries(newNodes)) {
+      const oldNode = oldNodes[id];
+
+      if (oldNode) {
+        for (const key in newNode) {
+          if (oldNode.hasOwnProperty(key) && oldNode[key] !== newNode[key]) {
+            changes.push(
+              `Changed ${key} (id: ${id}) from "${oldNode[key]}" to "${newNode[key]}"`
+            );
+          }
+        }
+      } else {
+        changes.push(`Added a field ${JSON.stringify(newNode, null, 4)}`);
+      }
+    }
+
+    return changes.join(", ");
+  };
 
   const apiContextValue = useMemo(
     () => ({
@@ -207,6 +163,7 @@ const APIContextProvider = ({ children }) => {
       UploadFile,
       workflowData,
       workdata,
+      UpdateWorkFlow,
     }),
     [
       messages,
@@ -220,6 +177,7 @@ const APIContextProvider = ({ children }) => {
       UploadFile,
       workflowData,
       workdata,
+      UpdateWorkFlow,
     ]
   );
 
