@@ -1,0 +1,50 @@
+.App {
+  background-color: transparent;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  background-color: rgb(196, 196, 196);
+  height: 100vh;
+}
+
+.dashboard #d-1 {
+  flex: 1;
+  background-color: white;
+}
+
+.dashboard #d-3 {
+  flex: 2;
+  background-color: white;
+}
+
+.dashboard #d-2 {
+  flex: 3;
+  background-color: white;
+  overflow: auto;
+}
+
+.dashboard #d-3:last-of-type {
+  flex: 2;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100vh;
+}
+
+#bottom-div {
+  margin-top: auto;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.react-flow__panel {
+  display: none;
+}

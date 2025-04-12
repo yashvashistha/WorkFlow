@@ -1,0 +1,41 @@
+@media (min-height: 500px) and (max-width: 991px) {
+
+}
+@media (max-width: 991px) {
+
+}
+
+@media (max-width: 767px) {
+
+}
+
+@media (max-width: 575px) {
+
+}
+
+@media (max-width: 480px) {
+}
+
+@media (min-width: 575px) and (max-width: 767px) {
+
+}
+
+@media (min-width: 575px) {
+  
+}
+
+@media (min-width: 992px) {
+  .footer {
+    position: absolute;
+    bottom: 0;
+    padding: 10px 25px;
+    border-top: 1px solid #ccc;
+    font-size: 11px;
+    line-height: 15px;
+    background-color: #0c233c;
+    color: #ffffffa3;
+    text-align: center;
+    left: 0;
+    right: 0;
+  }
+}
