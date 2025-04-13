@@ -302,7 +302,7 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-const WorkflowDiagram = ({ workflowData }) => {
+const WorkflowDiagram1 = ({ workflowData }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -376,4 +376,4 @@ const WorkflowDiagram = ({ workflowData }) => {
   );
 };
 
-export default WorkflowDiagram;
+export default WorkflowDiagram1;

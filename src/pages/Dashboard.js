@@ -1,19 +1,34 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ChatWindow from "../components/ChatWindow";
 import { APIContext } from "../helpers/APIContext";
 import WorkflowDiagram from "../components/WorkflowDiagram";
 import FileUpload from "../components/FileUpload";
 import ProcessTable from "../components/ProcessTable";
+import WorkflowDiagram1 from "../components/WorkflowDiagram1";
 
 export default function Dashboard() {
-  const { messages, workdata, workflowData, setMessages, UpdateWorkFlow } =
-    useContext(APIContext);
+  const {
+    messages,
+    workdata,
+    workflowData,
+    setMessages,
+    UpdateWorkFlow,
+    newworkflowData,
+  } = useContext(APIContext);
   const [showTable, setShowTable] = useState(true);
   const [typing, setTyping] = useState({
     type: false,
     txt: "",
   });
   const [prevkey, setPrevKey] = useState("");
+
+  useEffect(() => {
+    window.addEventListener("unhandledrejection", (event) => {
+      if (event.reason?.name === "ResizeObserverLoopError") {
+        event.preventDefault();
+      }
+    });
+  }, [newworkflowData]);
 
   const sendinput = async (text) => {
     setTyping({
@@ -71,6 +86,9 @@ export default function Dashboard() {
 
         {workflowData && <h4>Generated Workflow Diagram:</h4>}
         {workflowData && <WorkflowDiagram workflowData={workflowData} />}
+
+        {newworkflowData && <h4>New Generated Workflow Diagram:</h4>}
+        {newworkflowData && <WorkflowDiagram1 workflowData={newworkflowData} />}
       </section>
 
       <section id="d-3">
