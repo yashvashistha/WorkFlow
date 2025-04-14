@@ -1,4 +1,3 @@
-// import axios from "axios";
 import axios from "axios";
 import { createContext, useEffect, useMemo, useState } from "react";
 
@@ -96,7 +95,6 @@ const APIContextProvider = ({ children }) => {
     };
     let olddata = workflowData;
     try {
-      setWorkData(null);
       setNewWorkflowData(null);
       const response = await axios.post(`${url}/modify-process-flow/`, body, {
         headers: {
@@ -107,15 +105,7 @@ const APIContextProvider = ({ children }) => {
       });
 
       if (response.status == 200 && response.data) {
-        setWorkData(olddata);
         setNewWorkflowData(response.data);
-        // setMessages((prev) => [
-        //   ...prev,
-        //   {
-        //     sender: "ai",
-        //     query: describeChanges(olddata, response.data),
-        //   },
-        // ]);
         return { status: 1, msg: "", data: response.data };
       } else {
         return { status: 0, msg: "Error in Uploading the file", data: [] };
@@ -125,35 +115,6 @@ const APIContextProvider = ({ children }) => {
     } finally {
     }
   };
-
-  // const describeChanges = (oldJson, newJson) => {
-  //   const changes = [];
-
-  //   const oldNodes = Object.fromEntries(
-  //     (oldJson.nodes || []).map((node) => [node.id, node])
-  //   );
-  //   const newNodes = Object.fromEntries(
-  //     (newJson.nodes || []).map((node) => [node.id, node])
-  //   );
-
-  //   for (const [id, newNode] of Object.entries(newNodes)) {
-  //     const oldNode = oldNodes[id];
-
-  //     if (oldNode) {
-  //       for (const key in newNode) {
-  //         if (oldNode.hasOwnProperty(key) && oldNode[key] !== newNode[key]) {
-  //           changes.push(
-  //             `Changed ${key} (id: ${id}) from "${oldNode[key]}" to "${newNode[key]}"`
-  //           );
-  //         }
-  //       }
-  //     } else {
-  //       changes.push(`Added a field ${JSON.stringify(newNode, null, 4)}`);
-  //     }
-  //   }
-
-  //   return changes.join(", ");
-  // };
 
   const apiContextValue = useMemo(
     () => ({

@@ -86,9 +86,12 @@ export default function Dashboard() {
 
         {workflowData && <h4>Generated Workflow Diagram:</h4>}
         {workflowData && <WorkflowDiagram workflowData={workflowData} />}
-
-        {newworkflowData && <h4>New Generated Workflow Diagram:</h4>}
-        {newworkflowData && <WorkflowDiagram1 workflowData={newworkflowData} />}
+        <div>
+          {newworkflowData && <h4>New Generated Workflow Diagram:</h4>}
+          {newworkflowData && (
+            <WorkflowDiagram1 workflowData={newworkflowData} />
+          )}
+        </div>
       </section>
 
       <section id="d-3">
